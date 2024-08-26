@@ -1,9 +1,6 @@
 package cn.alex.version;
 
-import java.sql.Connection;
 import java.util.List;
-
-import javax.sql.DataSource;
 
 import cn.alex.version.callback.VersionUpdatingCallback;
 import cn.alex.version.callback.builder.VersionUpdatingCallbackBuilder;
@@ -22,13 +19,13 @@ import cn.hutool.core.comparator.VersionComparator;
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * 版本管理器
@@ -43,7 +40,7 @@ public class ApplicationVersionManagement implements ApplicationRunner, VersionU
 
     private final List<VersionUpdatingCallback> callbackList;
     private final ApplicationVersionProperties properties;
-    private final DataSource dataSource;
+    private final TransactionTemplate transactionTemplate;
     private final SqlExecuteService sqlExecute;
     private final JavaExecuteService javaExecute;
 
@@ -102,7 +99,7 @@ public class ApplicationVersionManagement implements ApplicationRunner, VersionU
     /**
      * 根据版本号自动执行更新
      */
-    public void versionUpdating() throws Exception {
+    public void versionUpdating() {
         if (VersionComparator.INSTANCE.compare(finalLocalVersion, jarVersion) > 0) {
             throw new VersionException(
                 StrUtil.format(
@@ -136,7 +133,7 @@ public class ApplicationVersionManagement implements ApplicationRunner, VersionU
         }
     }
 
-    private void execute(VersionXml versionXml) throws Exception {
+    private void execute(VersionXml versionXml) {
         Integer order = versionXml.getOrder();
         UpgradeExecuteOrderEnum orderEnum = EnumUtil.getBy(
             UpgradeExecuteOrderEnum.class,
@@ -147,34 +144,30 @@ public class ApplicationVersionManagement implements ApplicationRunner, VersionU
         if (ObjectUtil.isEmpty(orderEnum) || orderEnum == UpgradeExecuteOrderEnum.NONE) {
             return;
         }
-
-        @Cleanup
-        Connection connection = dataSource.getConnection();
-        connection.setAutoCommit(false);
-
         try {
-            switch (orderEnum) {
-                case SQL:
-                    sqlExecute.executeSqlScript(connection, versionXml);
-                    break;
-                case JAVA:
-                    javaExecute.executeJava(versionXml);
-                    break;
-                case SQL_JAVA:
-                    sqlExecute.executeSqlScript(connection, versionXml);
-                    javaExecute.executeJava(versionXml);
-                    break;
-                case JAVA_SQL:
-                    javaExecute.executeJava(versionXml);
-                    sqlExecute.executeSqlScript(connection, versionXml);
-                    break;
-                default:
-                    break;
-            }
-            connection.commit();
+            transactionTemplate.execute(status -> {
+                switch (orderEnum) {
+                    case SQL:
+                        sqlExecute.executeSqlScript(versionXml);
+                        break;
+                    case JAVA:
+                        javaExecute.executeJava(versionXml);
+                        break;
+                    case SQL_JAVA:
+                        sqlExecute.executeSqlScript(versionXml);
+                        javaExecute.executeJava(versionXml);
+                        break;
+                    case JAVA_SQL:
+                        javaExecute.executeJava(versionXml);
+                        sqlExecute.executeSqlScript(versionXml);
+                        break;
+                    default:
+                        break;
+                }
+                return null;
+            });
         } catch (Exception e) {
-            connection.rollback();
-            throw new ExecuteException("执行Java代码或SQL脚本异常", e);
+            throw new ExecuteException(versionXml.getVersion() + "版本升级，执行Java代码或SQL脚本异常", e);
         }
     }
 

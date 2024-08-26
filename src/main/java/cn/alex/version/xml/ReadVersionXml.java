@@ -29,7 +29,7 @@ public class ReadVersionXml {
      * @return 版本集合
      */
     public List<VersionXml> read() {
-        List<VersionXml> versionXmlList = null;
+        List<VersionXml> versionXmlList;
         try {
             @Cleanup
             InputStream fis = this.getClass().getClassLoader().getResourceAsStream(VersionXmlConstant.VERSION_XML_PATH);

@@ -1,7 +1,6 @@
 package cn.alex.version.execute;
 
 import cn.alex.version.exception.ExecuteCodeException;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Java代码执行
@@ -13,8 +12,8 @@ public abstract class AbstractJavaExecution {
 
     /**
      * 执行代码
+     *
      * @throws ExecuteCodeException 执行代码异常
      */
-    @Transactional(rollbackFor = Exception.class)
     public abstract void run() throws ExecuteCodeException;
 }

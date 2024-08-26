@@ -33,7 +33,7 @@ public enum UpgradeExecuteOrderEnum {
     JAVA_SQL(4),
     ;
 
-    Integer order;
+    final Integer order;
 
     UpgradeExecuteOrderEnum(Integer order) {
         this.order = order;
