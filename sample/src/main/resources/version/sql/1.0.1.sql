@@ -1,0 +1,1 @@
+INSERT INTO sys_user (user_name, pass_word) VALUES ('admin', '123456')

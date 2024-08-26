@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<versions>
+    <version>
+        <version>1.0.0</version>
+        <releaseTime>2024-8-26 12:30:53</releaseTime>
+        <description>新增版本升级示例</description>
+    </version>
+
+    <version>
+        <version>1.0.1</version>
+        <releaseTime>2024-8-26 13:30:53</releaseTime>
+        <description>执行SQL</description>
+        <order>1</order>
+    </version>
+
+    <version>
+        <version>1.0.2</version>
+        <releaseTime>2024-8-26 14:30:53</releaseTime>
+        <description>执行Java</description>
+        <order>2</order>
+        <classPath>cn.alex.sample.version.InsertUser</classPath>
+    </version>
+
+    <version>
+        <version>1.0.3</version>
+        <releaseTime>2024-8-26 15:30:53</releaseTime>
+        <description>执行SQL和Java</description>
+        <order>3</order>
+        <classPath>cn.alex.sample.version.UpdateUser</classPath>
+    </version>
+</versions>

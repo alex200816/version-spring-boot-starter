@@ -23,11 +23,24 @@ src
 <dependency>
     <groupId>cn.002alex</groupId>
     <artifactId>version-spring-boot-starter</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ~~~
 
-### 2、application.yml配置示例
+### 2、启动类添加@EnableVersionUpdating注解
+~~~ java
+@EnableVersionUpdating
+@SpringBootApplication
+public class SampleApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SampleApplication.class, args);
+    }
+
+}
+~~~
+
+### 3、application.yml配置示例
 ~~~ yml
 application-version:
     # 是否启用自动升级
@@ -40,7 +53,7 @@ application-version:
     versionConfigPath: 
 ~~~
 
-### 3、version.xml配置示例
+### 4、version.xml配置示例
 ###### 当前文件存放位置请看 **`文件目录`**
 ~~~ xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -80,7 +93,7 @@ application-version:
 </versions>
 ~~~
 
-### 4、各版本SQL脚本配置示例
+### 5、各版本SQL脚本配置示例
 ###### 需注意每条语句需加结束符 **`;`**，否则将出现无法预估的异常
 ~~~ mysql
 update sys_user set pass_word = '123456' where user_name = '张三';

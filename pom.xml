@@ -12,7 +12,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.002alex</groupId>
     <artifactId>version-spring-boot-starter</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>version-spring-boot-starter</name>
     <url>https://github.com/alex200816/version-spring-boot-starter</url>
     <description>version-spring-boot-starter</description>

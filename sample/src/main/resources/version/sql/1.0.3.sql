@@ -1,0 +1,1 @@
+UPDATE sys_user SET pass_word = 'admin' WHERE user_name = 'admin'
