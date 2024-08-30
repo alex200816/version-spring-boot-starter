@@ -11,12 +11,12 @@ import cn.alex.version.config.LocalVersionConfig;
 import cn.alex.version.enums.UpgradeExecuteOrderEnum;
 import cn.alex.version.exception.ExecuteException;
 import cn.alex.version.exception.VersionException;
-import cn.alex.version.execute.JavaExecuteService;
-import cn.alex.version.execute.SqlExecuteService;
+import cn.alex.version.execute.handle.JavaExecuteHandle;
+import cn.alex.version.execute.handle.SqlExecuteHandle;
+import cn.alex.version.utils.EnumUtil;
 import cn.alex.version.xml.VersionMetaData;
 import cn.alex.version.xml.VersionXml;
 import cn.hutool.core.comparator.VersionComparator;
-import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +41,8 @@ public class ApplicationVersionManagement implements ApplicationRunner, VersionU
     private final List<VersionUpdatingCallback> callbackList;
     private final ApplicationVersionProperties properties;
     private final TransactionTemplate transactionTemplate;
-    private final SqlExecuteService sqlExecute;
-    private final JavaExecuteService javaExecute;
+    private final SqlExecuteHandle sqlExecuteHandle;
+    private final JavaExecuteHandle javaExecuteHandle;
 
     /**
      * JAR的版本号
@@ -148,18 +148,18 @@ public class ApplicationVersionManagement implements ApplicationRunner, VersionU
             transactionTemplate.execute(status -> {
                 switch (orderEnum) {
                     case SQL:
-                        sqlExecute.executeSqlScript(versionXml);
+                        sqlExecuteHandle.executeSqlScript(versionXml);
                         break;
                     case JAVA:
-                        javaExecute.executeJava(versionXml);
+                        javaExecuteHandle.executeJava(versionXml);
                         break;
                     case SQL_JAVA:
-                        sqlExecute.executeSqlScript(versionXml);
-                        javaExecute.executeJava(versionXml);
+                        sqlExecuteHandle.executeSqlScript(versionXml);
+                        javaExecuteHandle.executeJava(versionXml);
                         break;
                     case JAVA_SQL:
-                        javaExecute.executeJava(versionXml);
-                        sqlExecute.executeSqlScript(versionXml);
+                        javaExecuteHandle.executeJava(versionXml);
+                        sqlExecuteHandle.executeSqlScript(versionXml);
                         break;
                     default:
                         break;
@@ -178,8 +178,7 @@ public class ApplicationVersionManagement implements ApplicationRunner, VersionU
         startBuilder.setLocalVersion(finalLocalVersion);
 
         for (VersionUpdatingCallback callback : callbackList) {
-            Class<? extends VersionUpdatingCallback> aClass = callback.getClass();
-            if (aClass != this.getClass()) {
+            if (isThisCallback(callback.getClass())) {
                 callback.onStartCall(startBuilder);
             }
         }
@@ -193,8 +192,7 @@ public class ApplicationVersionManagement implements ApplicationRunner, VersionU
         updateBuilder.setLocalVersion(finalLocalVersion);
 
         for (VersionUpdatingCallback callback : callbackList) {
-            Class<? extends VersionUpdatingCallback> aClass = callback.getClass();
-            if (aClass != this.getClass()) {
+            if (isThisCallback(callback.getClass())) {
                 callback.onUpdatingStartCall(updateBuilder);
             }
         }
@@ -208,8 +206,7 @@ public class ApplicationVersionManagement implements ApplicationRunner, VersionU
         updateBuilder.setLocalVersion(finalLocalVersion);
 
         for (VersionUpdatingCallback callback : callbackList) {
-            Class<? extends VersionUpdatingCallback> aClass = callback.getClass();
-            if (aClass != this.getClass()) {
+            if (isThisCallback(callback.getClass())) {
                 callback.onUpdatingEndCall(updateBuilder);
             }
         }
@@ -218,8 +215,7 @@ public class ApplicationVersionManagement implements ApplicationRunner, VersionU
     @Override
     public void onEndCall() {
         for (VersionUpdatingCallback callback : callbackList) {
-            Class<? extends VersionUpdatingCallback> aClass = callback.getClass();
-            if (aClass != this.getClass()) {
+            if (isThisCallback(callback.getClass())) {
                 callback.onEndCall();
             }
         }
@@ -233,10 +229,19 @@ public class ApplicationVersionManagement implements ApplicationRunner, VersionU
         exceptionBuilder.setLocalVersion(finalLocalVersion);
 
         for (VersionUpdatingCallback callback : callbackList) {
-            Class<? extends VersionUpdatingCallback> aClass = callback.getClass();
-            if (aClass != this.getClass()) {
+            if (isThisCallback(callback.getClass())) {
                 callback.onExceptionCall(exceptionBuilder);
             }
         }
+    }
+
+    /**
+     * 是否为当前回调
+     */
+    public boolean isThisCallback(Class<?> aClass) {
+        if (aClass != this.getClass()) {
+            return true;
+        }
+        return false;
     }
 }

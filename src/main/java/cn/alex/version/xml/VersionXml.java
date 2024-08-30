@@ -35,10 +35,9 @@ public class VersionXml {
     private String description;
 
     /**
-     * 类路径(可调用方法执行一些升级操作)
-     * 例: com.hcr.data.submission.ApplicationStandAlone
+     * 调用目标字符串（自定义beanName）
      */
-    private String classPath;
+    private String invokeTarget;
 
     /**
      * 执行顺序

@@ -1,26 +1,19 @@
 package cn.alex.version.execute;
 
 import cn.alex.version.exception.ExecuteCodeException;
-import cn.alex.version.xml.VersionXml;
-import cn.hutool.extra.spring.SpringUtil;
-import org.springframework.stereotype.Service;
 
 /**
- * 执行Java代码
+ * Java代码执行
  *
  * @author Alex
- * @date 2024/7/28 下午11:40
+ * @date 2024/7/29 上午12:34
  */
-@Service
-public class JavaExecuteService {
+public interface JavaExecuteService {
 
-    public void executeJava(VersionXml versionXmlDTO) throws ExecuteCodeException {
-        try {
-            Object obj = SpringUtil.getBean(Class.forName(versionXmlDTO.getClassPath()));
-            obj.getClass().getDeclaredMethod("run").invoke(obj);
-        } catch (Exception e) {
-            throw new ExecuteCodeException("执行Java代码异常", e);
-        }
-    }
-
+    /**
+     * 执行代码
+     *
+     * @throws ExecuteCodeException 执行代码异常
+     */
+    void execute() throws ExecuteCodeException;
 }

@@ -20,14 +20,14 @@ public interface VersionUpdatingCallback {
     void onStartCall(VersionUpdatingCallbackStartBuilder startBuilder);
 
     /**
-     * 开始执行版本升级
+     * 开始执行一个版本的升级
      *
      * @param updateBuilder 回调参数
      */
     void onUpdatingStartCall(VersionUpdatingCallbackBuilder updateBuilder);
 
     /**
-     * 结束执行版本升级
+     * 结束执行一个版本升级
      *
      * @param updateBuilder 回调参数
      */

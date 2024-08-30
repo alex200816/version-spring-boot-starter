@@ -5,6 +5,9 @@
 2. 每个版本升级时支持运行SQL脚本和Java代码，Java代码中支持操作数据库
 3. 执行SQL脚本或Java代码支持异常事务回滚
 
+## 示例工程
+[查看示例工程](sample)
+
 ## 文件目录
 ~~~ bash
 src
@@ -76,11 +79,11 @@ application-version:
              4.先执行JAVA方法后执行SQL脚本
         -->
         <order>0</order>
-        <!-- 类路径(可调用方法执行一些升级操作) 
-             例: cn.xxx.version.1.0.0.UpdateUser
-             注意：类必须添加@Component注解，需继承cn.alex.version.execute.AbstractJavaExecution，否则事务可能会失效
+        <!-- 自定义BeanName(可调用方法执行一些升级操作) 
+             例: invokeTarget 或 updateUser
+             注意：需实现cn.alex.version.execute.JavaExecuteService接口
         -->
-        <classPath></classPath>
+        <invokeTarget></invokeTarget>
     </version>
     <version>
         <version>1.0.1</version>
@@ -106,49 +109,41 @@ import cn.alex.version.callback.VersionUpdatingCallback;
 import cn.alex.version.callback.builder.VersionUpdatingCallbackBuilder;
 import cn.alex.version.callback.builder.VersionUpdatingCallbackExceptionBuilder;
 import cn.alex.version.callback.builder.VersionUpdatingCallbackStartBuilder;
+import org.springframework.stereotype.Service;
 
 /**
  * 版本升级回调
  *
  * @author Alex
- * @date 2024/8/25 01:42
+ * @date 2024/8/31 04:54
  */
-public class ApplicationVersionCallback implements VersionUpdatingCallback {
-
-    /**
-     * 开始升级回调
-     * @param startBuilder 回调参数
-     */
+@Service
+public class CustomCallBack implements VersionUpdatingCallback {
     @Override
     public void onStartCall(VersionUpdatingCallbackStartBuilder startBuilder) {
-        System.out.println("开始升级");
+        System.out.println("开始执行版本升级");
     }
 
-    /**
-     * 每个版本开始执行升级回调
-     * @param updateBuilder 回调参数
-     */
     @Override
-    public void onUpdatingCall(VersionUpdatingCallbackBuilder updateBuilder) {
-        System.out.println("正在升级" + updateBuilder.getUpgradeVersion());
+    public void onUpdatingStartCall(VersionUpdatingCallbackBuilder updateBuilder) {
+        System.out.println("开始执行一个版本的升级");
     }
 
-    /**
-     * 升级完成回调
-     */
+    @Override
+    public void onUpdatingEndCall(VersionUpdatingCallbackBuilder updateBuilder) {
+        System.out.println("结束执行一个版本升级");
+    }
+
     @Override
     public void onEndCall() {
-        System.out.println("完成升级");
+        System.out.println("结束执行版本升级回调");
     }
 
-    /**
-     * 升级异常回调
-     * @param exceptionBuilder 回调参数
-     */
     @Override
     public void onExceptionCall(VersionUpdatingCallbackExceptionBuilder exceptionBuilder) {
-        System.out.println("升级异常");
+        System.out.println("异常回调");
     }
 }
 ~~~
+
 

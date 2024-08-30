@@ -3,21 +3,21 @@ package cn.alex.sample.version;
 import cn.alex.sample.entity.SysUser;
 import cn.alex.sample.mapper.SysUserMapper;
 import cn.alex.version.exception.ExecuteCodeException;
-import cn.alex.version.execute.AbstractJavaExecution;
+import cn.alex.version.execute.JavaExecuteService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Alex
  * @date 2024/8/26 19:35
  */
-@Component
+@Service("insertUser")
 @RequiredArgsConstructor
-    public class InsertUser extends AbstractJavaExecution {
-        private final SysUserMapper userMapper;
+public class InsertUser implements JavaExecuteService {
+    private final SysUserMapper userMapper;
 
     @Override
-    public void run() throws ExecuteCodeException {
+    public void execute() throws ExecuteCodeException {
         userMapper.insert(new SysUser("zhangsan", "123456"));
     }
 }

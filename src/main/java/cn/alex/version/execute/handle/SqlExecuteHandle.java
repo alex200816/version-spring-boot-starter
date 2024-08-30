@@ -1,4 +1,4 @@
-package cn.alex.version.execute;
+package cn.alex.version.execute.handle;
 
 import java.sql.Connection;
 
@@ -26,7 +26,7 @@ import org.springframework.util.Assert;
  */
 @Service
 @RequiredArgsConstructor
-public class SqlExecuteService {
+public class SqlExecuteHandle {
     private final JdbcTemplate jdbcTemplate;
 
     public void executeSqlScript(VersionXml versionXmlDTO) throws ExecuteSqlException {

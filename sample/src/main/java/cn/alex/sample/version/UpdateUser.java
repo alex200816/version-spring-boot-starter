@@ -3,22 +3,22 @@ package cn.alex.sample.version;
 import cn.alex.sample.entity.SysUser;
 import cn.alex.sample.mapper.SysUserMapper;
 import cn.alex.version.exception.ExecuteCodeException;
-import cn.alex.version.execute.AbstractJavaExecution;
+import cn.alex.version.execute.JavaExecuteService;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Alex
  * @date 2024/8/26 19:36
  */
-@Component
+@Service("updateUser")
 @RequiredArgsConstructor
-public class UpdateUser extends AbstractJavaExecution {
+public class UpdateUser implements JavaExecuteService {
     private final SysUserMapper userMapper;
 
     @Override
-    public void run() throws ExecuteCodeException {
+    public void execute() throws ExecuteCodeException {
         userMapper.update(new LambdaUpdateWrapper<SysUser>()
             .eq(SysUser::getUserName, "zhangsan")
             .set(SysUser::getPassWord, "zhangsan")

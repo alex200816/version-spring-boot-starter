@@ -46,6 +46,12 @@
             <artifactId>version-spring-boot-starter</artifactId>
             <version>1.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>cn.002alex</groupId>
+            <artifactId>version-spring-boot-starter</artifactId>
+            <version>1.0.3</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>

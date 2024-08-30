@@ -5,14 +5,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.12</version>
+        <version>2.4.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.002alex</groupId>
     <artifactId>version-spring-boot-starter</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <name>version-spring-boot-starter</name>
     <url>https://github.com/alex200816/version-spring-boot-starter</url>
     <description>version-spring-boot-starter</description>
@@ -48,7 +48,6 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <hutool.version>5.8.31</hutool.version>
-        <fastjson2.version>2.0.20</fastjson2.version>
     </properties>
 
     <dependencies>
@@ -75,13 +74,6 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-core</artifactId>
-            <version>${hutool.version}</version>
-        </dependency>
-
-        <!-- HuTool 扩展模块 -->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-extra</artifactId>
             <version>${hutool.version}</version>
         </dependency>
 
