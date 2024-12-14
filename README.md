@@ -1,14 +1,33 @@
-# version-spring-boot-starter
+# 单机应用自动升级工具
 
 ## 介绍
-1. 无网应用自动升级
-2. 每个版本升级时支持运行SQL脚本和Java代码，Java代码中支持操作数据库
-3. 执行SQL脚本或Java代码支持异常事务回滚
+以往部署单机版应用时，用户常常面临手动更新SQL和JAR包等繁琐操作，这不仅要求用户具备一定的技术背景，还容易在升级过程中出错，导致应用无法正常运行。为了解决这一难题，推出了这款专为单机应用设计的升级工具。
 
-## 示例工程
-[查看示例工程](sample)
+## 特点
+**单机版设计，灵活便捷**：
+本工具专为单机应用量身打造，无需网络连接即可轻松使用。无论您身处何地，只要集成本工具，就能随时随地进行软件升级，无需担心网络环境的限制。
 
-## 文件目录
+**无网升级，安全可靠**：
+与传统的在线升级方式不同，本工具采用离线升级模式，无需依赖网络连接。您只需将旧版的JAR包替换为新版，即可完成升级操作，既安全又可靠，避免了网络不稳定或数据泄露的风险。
+
+**简便易用，一键升级**：
+我们深知用户对于升级过程的担忧和困扰，因此本工具无需用户操作任何步骤。只需将旧JAR替换的操作，即可完成整个升级过程，无需繁琐的设置或特殊技能，真正实现无感升级。
+
+**智能检测，自动升级**：
+本工具内置智能检测功能，能够自动检测当前安装的软件版本，并与加载的最新版本进行比对。一旦发现新版本，将自动执行升级操作，无需您手动干预，让您及时享受最新功能。
+
+**数据升级，无缝衔接**：
+为了确保软件升级后数据的完整性和一致性，本工具在每个版本升级时都会自动执行相应的自定义SQL脚本用于升级数据库。在升级过程中，工具会自动执行这些SQL脚本，确保数据库结构与软件版本相匹配，实现无缝衔接。
+
+**完全开源**：
+本工具采用完全开源的设计理念，让您能够自由定制和扩展其功能。无论您是开发者还是技术爱好者，都能轻松上手，根据自己的需求进行个性化定制，打造属于自己的专属升级工具。
+
+## 集成
+
+### 示例
+[查看示例工程](https://gitee.com/alex200816/version-spring-boot-starter/tree/master/sample)
+
+### 文件目录
 ~~~ bash
 src
   |-- main
@@ -20,8 +39,9 @@ src
               |-- version.xml   # 当前文件存放各个版本信息，及升级需要执行的操作
 ~~~
 
-## 使用说明
-### 1、maven引入依赖
+### 使用说明
+
+**1、maven引入依赖**
 ~~~ xml
 <dependency>
     <groupId>cn.002alex</groupId>
@@ -30,7 +50,7 @@ src
 </dependency>
 ~~~
 
-### 2、启动类添加@EnableVersionUpdating注解
+**2、启动类添加@EnableVersionUpdating注解**
 ~~~ java
 @EnableVersionUpdating
 @SpringBootApplication
@@ -43,7 +63,7 @@ public class SampleApplication {
 }
 ~~~
 
-### 3、application.yml配置示例
+**3、application.yml配置示例**
 ~~~ yml
 application-version:
     # 是否启用自动升级
@@ -56,8 +76,8 @@ application-version:
     versionConfigPath: 
 ~~~
 
-### 4、version.xml配置示例
-###### 当前文件存放位置请看 **`文件目录`**
+**4、version.xml配置示例**
+> 当前文件存放位置请看 **`文件目录`**
 ~~~ xml
 <?xml version="1.0" encoding="utf-8"?>
 <versions>
@@ -96,14 +116,15 @@ application-version:
 </versions>
 ~~~
 
-### 5、各版本SQL脚本配置示例
-###### 需注意每条语句需加结束符 **`;`**，否则将出现无法预估的异常
+**5、各版本SQL脚本配置示例**
+> 需注意每条语句需加结束符 **`;`**，否则将出现无法预估的异常
 ~~~ mysql
 update sys_user set pass_word = '123456' where user_name = '张三';
 ~~~
 
-## 执行回调
-### ApplicationVersionCallback.java
+**6.每个版本执行回调**
+
+ApplicationVersionCallback.java
 ~~~ java
 import cn.alex.version.callback.VersionUpdatingCallback;
 import cn.alex.version.callback.builder.VersionUpdatingCallbackBuilder;
